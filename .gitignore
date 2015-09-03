@@ -59,3 +59,5 @@ target/
 # Added by JG
 .DS_Store
 config.py
+*.CSV
+*.csv
