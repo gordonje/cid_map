@@ -6,7 +6,7 @@ Data and code related to KBIA CID coverage.
 Dependencies
 ------------
 
-*	[Python 2.7 +](https://www.python.org/ "Python 2.7"):
+*	[Python 2.7 +](https://www.python.org/ "Python 2.7"): An interpreted, object-oriented, high-level programming language
 *	[PostgreSQL 9.3 +](http://www.postgresql.org/ "PostgreSQL"): An open source object-relational database system
 *	[psycopg2](http://initd.org/psycopg/ "psycopg2"): For connecting Python to Postgres
 *	[peewee](https://peewee.readthedocs.org/en/latest/): A simple object-relational mapper (ORM)
