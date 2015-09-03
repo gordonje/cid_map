@@ -1,7 +1,7 @@
 cid_map
 =======
 
-Data and code related to KBIA CID coverage.
+This project involved creating a map showing where voters are located in proximity to Columbia's Community Improvement Districts (CIDs).
 
 Dependencies
 ------------
@@ -41,4 +41,6 @@ You'll need your own Google Maps API key, which should be saved in file called c
 Then run [get_geocodes.py](https://github.com/gordonje/cid_map/blob/master/get_geocodes.py):
 
 	$ python get_geocodes.py [name of your database] [your Postgres user name] [your Postgres password]
+
+Which will requests geocodes for each Columbia city voter whose address has not been geocoded.
 

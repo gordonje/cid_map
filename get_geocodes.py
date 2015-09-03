@@ -5,15 +5,20 @@ from config import api_key
 
 gmaps = googlemaps.Client(key=api_key)
 
-for voter in Voter.select():
+# get already geocoded voters
+geocoded = [] 
+
+for i in Voter_Geocode.select():
+	geocoded.append(i.voter_id)
+
+for voter in Voter.select().where(~(Voter.vr_id << geocoded) & (Voter.res_cty_st == 'COLUMBIA')).order_by(Voter.vr_id):
 
 	address_str = '{vr_housno} {vr_dir} {vr_street} {vr_kind} {vr_suffix} {vr_apt} {vr_add2} {res_cty_st} MO {vr_zipa}'.format(**voter.__dict__['_data']).replace('None ', '')
-	print '   Getting geocodes for {}'.format(address_str)
+	print '   Getting geocodes for {0} (vr_id: {1})'.format(address_str, voter.vr_id)
 
-	sleep(.3)
+	sleep(.2)
 
 	try:
-		# results = geolocator.geocode(address_str)
 		results = gmaps.geocode(address_str)
 	except Exception as e:
 		print type(e)
