@@ -3,7 +3,7 @@ from time import sleep
 import googlemaps
 from config import api_key
 
-gmaps = googlemaps.Client(key=ap_key)
+gmaps = googlemaps.Client(key=api_key)
 
 for voter in Voter.select():
 
