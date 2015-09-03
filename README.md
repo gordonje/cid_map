@@ -27,7 +27,7 @@ Then run [db_setup.py](https://github.com/gordonje/cid_map/blob/master/db_setup.
 
 Which will...
 
-1.	Create any missing database tables, whereas each class is defined in [models.py](https://github.com/ireapps/cid_map/blob/master/models.py) (other than BaseModel) maps to a table in the database, and the attributes for the classes map to columns on those tables. When we eventually instantiate objects of these classes, those objects become rows in the data tables.
+1.	Create any missing database tables, whereas each class is defined in [models.py](https://github.com/gordonje/cid_map/blob/master/models.py) (other than BaseModel) maps to a table in the database, and the attributes for the classes map to columns on those tables. When we eventually instantiate objects of these classes, those objects become rows in the data tables.
 2.	Clean and import voter records from VRTAPE01KBIA_W_HEADERS.CSV (not included) if they haven't already been imported.
 
 Note that the Postgres database user you specify will also need read permissions on the .csv file. So if you're logging into the database with the "postgres" role, this might be a problem. You could either manual set the permissions on the file to allow "Everyone" to read them or, better yet, create a new database role for your user account (Note that this might require you to run 'createdb' from the terminal if your PostgreSQL installation process did not set up a default database for the user OS user account).
