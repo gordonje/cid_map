@@ -27,7 +27,7 @@ with Session() as r_sesh:
 		url = 'https://maps.googleapis.com/maps/api/geocode/json'
 		params = {'key': api_key, 'address': address_str}
 		# pause for a tenth of a second
-		sleep(.1)
+		sleep(.13)
 		
 		# make the get request
 		try: 
