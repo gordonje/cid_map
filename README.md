@@ -10,7 +10,7 @@ Dependencies
 *	[PostgreSQL 9.3 +](http://www.postgresql.org/ "PostgreSQL"): An open source object-relational database system
 *	[psycopg2](http://initd.org/psycopg/ "psycopg2"): For connecting Python to Postgres
 *	[peewee](https://peewee.readthedocs.org/en/latest/): A simple object-relational mapper (ORM)
-*	[googlemaps](https://github.com/googlemaps/google-maps-services-python "googlemaps"): Google's own Python client for their Maps API
+*	[requests](http://docs.python-requests.org/en/latest/ "requests"): For handling HTTP request, in this case to the [Google Maps Geocoding API](https://developers.google.com/maps/documentation/geocoding/intro)
 
 Set up
 ------

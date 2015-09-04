@@ -62,9 +62,10 @@ class Voter(BaseModel):
 class Voter_Geocode(BaseModel):
 	voter = ForeignKeyField(Voter, related_name = 'geocodes')
 	service = CharField()
-	lat = FloatField()
-	lng = FloatField()
-	location_type = CharField()
+	status = CharField()
+	lat = FloatField(null = True)
+	lng = FloatField(null = True)
+	location_type = CharField(null = True)
 	json_results = JSONField()
 
 	class Meta:
