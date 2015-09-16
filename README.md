@@ -42,5 +42,5 @@ Then run [get_geocodes.py](https://github.com/gordonje/cid_map/blob/master/get_g
 
 	$ python get_geocodes.py [name of your database] [your Postgres user name] [your Postgres password]
 
-Which will requests geocodes for each Columbia city voter whose address has not been geocoded.
+Which will request geocodes for each Columbia city voter whose address has not yet been geocoded.
 
