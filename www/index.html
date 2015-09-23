@@ -1,0 +1,52 @@
+<!doctype html>
+
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+  <title>Columbia CID Districts</title>
+
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link rel="stylesheet" href="screen.css" />
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+  <link rel="stylesheet" href="lib/Leaflet.markercluster/MarkerCluster.css"/>
+  <link rel="stylesheet" href="lib/Leaflet.markercluster/MarkerCluster.Default.css"/>
+  <link rel="stylesheet" href="lib/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css">
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+  <!-- Nav buttons -->
+  <div class="container-fluid">
+    <div class="btn-group btn-group-justified" role="group">
+      <div class="btn-group" role="group">
+        <button type='button' class='btn btn-default btn-sm' data-zoom="15" data-position="38.965,-92.335">Business Loop</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type='button' class='btn btn-default btn-sm' data-zoom="16" data-position="38.95171644899698,-92.32861876487732">Downtown</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type='button' class='btn btn-default btn-sm' data-zoom="16" data-position="39.004394771023,-92.32113003730774">North 763</button>
+      </div>
+    </div>
+    <div id="map"></div>
+    <div id="info-text"> 
+      <h2>At least <span id='voter-count'></span> voters in <span id="sq-miles"></span> square miles.</h2>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+  <script src="lib/Leaflet.markercluster/leaflet.markercluster.js"></script>
+  <script src="lib/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+  <script src="scripts/script.js"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@ from peewee import SelectQuery
 db.create_tables([
 				  Voter
 				, Voter_Geocode
+				, Voter_History
 			], True)
 
 voter_count = SelectQuery(Voter).count()

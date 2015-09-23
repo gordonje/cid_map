@@ -63,13 +63,40 @@ class Voter_Geocode(BaseModel):
 	voter = ForeignKeyField(Voter, related_name = 'geocodes')
 	service = CharField()
 	status = CharField()
-	lat = FloatField(null = True)
-	lng = FloatField(null = True)
+	lat = DoubleField(null = True)
+	lng = DoubleField(null = True)
 	location_type = CharField(null = True)
+	street_number = CharField(null = True) 
+	route = CharField(null = True)
+	locality = CharField(null = True)
+	administrative_area_level_3 = CharField(null = True)
+	administrative_area_level_2 = CharField(null = True)
+	administrative_area_level_1 = CharField(null = True) 
+	postal_code = CharField(null = True) 
+	postal_code_suffix = CharField(null = True)
+	country = CharField(null = True)
+	formatted_address = CharField(null = True)
+	viewport_ne_lat = DoubleField(null = True)
+	viewport_ne_lng = DoubleField(null = True)
+	viewport_sw_lat = DoubleField(null = True)
+	viewport_sw_lng = DoubleField(null = True)
+	partial_match = BooleanField()
 	json_results = JSONField()
 
 	class Meta:
 		db_table = 'voters_geocodes'
 		indexes = (
 			(('voter', 'service'), True),
+		)
+
+
+class Voter_History(BaseModel):
+	voter = ForeignKeyField(Voter, related_name = 'voter_history')
+	month = IntegerField()
+	year = IntegerField()
+	election_type = CharField()
+
+	class Meta:
+		indexes = (
+			(('voter', 'month', 'year'), True),
 		)

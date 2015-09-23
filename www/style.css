@@ -1,0 +1,33 @@
+
+.container {
+	position:relative;
+	width:100%;
+	padding-bottom:45%;
+	height:0;
+	overflow:hidden;
+}
+
+.btn-group {
+	clear: left;
+}
+ 
+#map {
+	clear: left;
+	position:static;
+	width: 100%;
+	float: left;
+	height: 600px;
+}
+
+#info-text {
+	clear: bottom;
+	text-align: center;
+}
+
+#voter-count {
+	color: #0080FF;
+}
+
+#sq-miles {
+	color: #088A08;
+}
