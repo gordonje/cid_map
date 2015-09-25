@@ -1,10 +1,14 @@
+html, body {
+	height: 100%;
+}
 
-.container {
-	position:relative;
-	width:100%;
-	padding-bottom:45%;
-	height:0;
-	overflow:hidden;
+.container-fluid {
+	height: 100%;
+	width: 100%;
+	height: 100%;
+	min-height: 100%;
+	/*padding-bottom: 45%;*/
+	overflow: hidden;
 }
 
 .btn-group {
@@ -13,10 +17,11 @@
  
 #map {
 	clear: left;
-	position:static;
 	width: 100%;
+	min-width: 100%;
+	height: 80%;
+	min-height: 80%;
 	float: left;
-	height: 600px;
 }
 
 #info-text {

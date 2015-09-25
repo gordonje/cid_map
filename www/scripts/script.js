@@ -224,8 +224,6 @@ map.on('dragend', function(e) {
 // the 'viewreset' map even should be handling zooming out
 map.on('viewreset', function(e) {
 
-	console.log('view reset!')
-
 	inCIDMarkers.clearLayers();
 	outCIDMarkers.clearLayers();
 	countVoters = 0;
