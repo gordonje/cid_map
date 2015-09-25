@@ -110,8 +110,6 @@ function getArea(mapBounds) {
 // sets the global countVoters var
 function render() {
 	
-	console.log('Called!')
-	
 	mapBounds = map.getBounds();
 	var inCID = getMarkers(mapBounds, Boolean(true));
 	var outCID = getMarkers(mapBounds, Boolean(false));
@@ -226,6 +224,8 @@ map.on('dragend', function(e) {
 // the 'viewreset' map even should be handling zooming out
 map.on('viewreset', function(e) {
 
+	console.log('view reset!')
+
 	inCIDMarkers.clearLayers();
 	outCIDMarkers.clearLayers();
 	countVoters = 0;
@@ -244,15 +244,22 @@ map.on('resize', delayedRender);
 
 // changing the view when clicking the button
 $("button").on('click', function() {
+	var startZoom = map.getZoom();
 	map.setView(
 		  $(this).attr("data-position").split(',')
 		, +$(this).attr("data-zoom")
 	);
-	inCIDMarkers.clearLayers();
-	outCIDMarkers.clearLayers();
-	countVoters = 0;
-	render();
-	writeInfo();
+	var endZoom = map.getZoom();
+	// if the zoom is changing, then view reset will handle this change
+	// otherwise we need to clear, render and writeInfo
+	if (startZoom == endZoom) {
+
+		inCIDMarkers.clearLayers();
+		outCIDMarkers.clearLayers();
+		countVoters = 0;
+		render();
+		writeInfo();
+	};
 });
 
 
@@ -260,7 +267,7 @@ $("button").on('click', function() {
 
 // map.on('zoomstart', function(e) {
 
-// 	console.log(map.getZoom());
+// 	console.log('Zoom started!');
 		
 // 	inCIDMarkers.clearLayers();
 // 	outCIDMarkers.clearLayers();
