@@ -152,7 +152,7 @@ function writeInfo() {
 };
 
 // calls render() and writeInfo()
-var lazyRender = _.debounce(function() {
+var delayedRender = _.debounce(function() {
 
 	inCIDMarkers.clearLayers();
 	outCIDMarkers.clearLayers();
@@ -240,15 +240,19 @@ map.on('viewreset', function(e) {
 	} 
 });
 
-map.on('resize', lazyRender);
+map.on('resize', delayedRender);
 
+// changing the view when clicking the button
 $("button").on('click', function() {
 	map.setView(
 		  $(this).attr("data-position").split(',')
 		, +$(this).attr("data-zoom")
 	);
-	// render();
-	// writeInfo();
+	inCIDMarkers.clearLayers();
+	outCIDMarkers.clearLayers();
+	countVoters = 0;
+	render();
+	writeInfo();
 });
 
 
@@ -264,5 +268,5 @@ $("button").on('click', function() {
 
 // });
 
-// map.on('zoomend', lazyRender);
+// map.on('zoomend', delayedRender);
 
