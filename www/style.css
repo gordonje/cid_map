@@ -24,6 +24,12 @@
 	text-align: center;
 }
 
+#instruct-text {
+	display: none;
+	clear: bottom;
+	text-align: center;
+}
+
 #voter-count {
 	color: #0080FF;
 }

@@ -6,7 +6,7 @@ SELECT
                 WHEN vr_id = 330129 THEN 38.96769
                 -- manually fix this one downtown voter's lat
                 WHEN vr_id = 323026 THEN 38.950234
-                -- manually fixt these non-downtown voters' lats
+                -- manually fix these non-downtown voters' lats
                 WHEN vr_id in (364640, 361307) THEN 38.9524282
                 ELSE lat
         END AS lat,

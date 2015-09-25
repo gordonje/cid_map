@@ -1,3 +1,7 @@
+
+// set up map, center on Business Loop at zoom level 15
+var map = L.map('map').setView([38.965, -92.335], 15);
+
 // custom marker colors and icons (via glyphicon, bootstrap and awesome makers)
 // green is for in CID
 var greenMarker = L.AwesomeMarkers.icon({
@@ -10,63 +14,14 @@ var blueMarker = L.AwesomeMarkers.icon({
 	markerColor: 'blue'
 });
 
-// set up map, center on Business Loop at zoom level 15
-var map = L.map('map').setView([38.965, -92.335], 15);
-
 // global variables
 var mapBounds;
 var countVoters = 0;
-
-L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-    id: 'gordonje.fcef19c2',
-    accessToken: 'pk.eyJ1IjoiZ29yZG9uamUiLCJhIjoiY2E4ZjhlODc3ZjA2OWFiMjJiOTcxMmM2YTJkZTBlNjQifQ.pTjkHSCU8l6v_7O0H_5c-g'
-}).addTo(map);
 
 // color for CID shapes
 var shapeStyle = {
     "color": "#FE9A2E",
 };
-
-// load each CID .kml file
-$.getJSON("data/downtown_cid.json", function(data){
-// add GeoJSON layer to the map once the file is loaded
-	L.geoJson(data, {style: shapeStyle}).addTo(map);
-});
-
-$.getJSON("data/the_loop_cid.json", function(data){
-// add GeoJSON layer to the map once the file is loaded
-	L.geoJson(data, {style: shapeStyle}).addTo(map);
-});
-
-$.getJSON("data/north_763_cid.json", function(data){
-// add GeoJSON layer to the map once the file is loaded
-	L.geoJson(data, {style: shapeStyle}).addTo(map);
-});
-
-// // probably lose this cause it doesn't take that long to load
-// var progress = document.getElementById('progress');
-// var progressBar = document.getElementById('progress-bar');
-
-// function updateProgressBar(processed, total, elapsed, layersArray) {
-// 	if (elapsed > 1000) {
-// 		// if it takes more than a second to load, display the progress bar:
-// 		progress.style.display = 'block';
-// 		progressBar.style.width = Math.round(processed/total*100) + '%';
-// 	}
-
-// 	if (processed === total) {
-// 		// all markers processed - hide the progress bar:
-// 		progress.style.display = 'none';
-// 	}
-// }
-
-// d3.csv('data/downtown_cid_voters.csv', function(d) {
-// 		return L.marker([+d.lat, +d.lng]).bindPopup(d.vr_id).addTo(map);
-// 	}, function(data) {
-// 		console.log('Downtown voters loaded.');
-// 	}
-// );
 
 // set up cluster group for markers outside of CID
 var outCIDMarkers = L.markerClusterGroup({ 
@@ -76,11 +31,8 @@ var outCIDMarkers = L.markerClusterGroup({
 			  html: '<div><span>' + cluster.getChildCount() + '</span></div>'
 			, className: 'marker-cluster marker-cluster-out'
 			, iconSize: new L.Point(40, 40)
-			// html: '<div class="leaflet-marker-icon marker-cluster marker-cluster-out leaflet-zoom-animated leaflet-clickable" style="margin-left: -20px; margin-top: -20px; width: 40px; height: 40px; transform: translate3d(869px, 4px, 0px); z-index: 4;"><div><span>' + cluster.getChildCount() + '</span></div></div>'
-			// html: '<div style="text-align:center;color:#fff;background:#2164A1">' + cluster.getChildCount() + '</div>'
 		});
 	}
-	// , chunkProgress: updateProgressBar
 });
 
 // set up cluster group for markers inside of CID
@@ -95,73 +47,56 @@ var inCIDMarkers = L.markerClusterGroup({
 			// html: '<div style="text-align:center;color:#fff;background:#008141">' + cluster.getChildCount() + '</div>'
 		});
 	}
-	// , chunkProgress: updateProgressBar
 });
 
-// pass in a number and add commas for every three digits
+// pass in a number
+// return a string version of the number with commas inserted every three digits
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
 
-// pass in the current bounds of the map, load the voters who are outside of the CIDs
-function showOutVoters(mapBounds) {
+// pass in the current bounds of the map and boolean for voters in our out of the CID
+// return and array of markers
+function getMarkers(mapBounds, inCID) {
+	
+	var filters = function(model) {
+		var lat = +model.get('lat');
+		var lng = +model.get('lng');
 
-	d3.csv('data/geocodes.csv', function(d) {
+		if (inCID) {
+			return +mapBounds.getSouth() < lat
+				&& lat < +mapBounds.getNorth() 
+				&& +mapBounds.getWest() < lng 
+				&& lng < +mapBounds.getEast()
+				&& model.get('cid') != 'No'
+		} else {
+			return +mapBounds.getSouth() < lat
+				&& lat < +mapBounds.getNorth() 
+				&& +mapBounds.getWest() < lng 
+				&& lng < +mapBounds.getEast()
+				&& model.get('cid') == 'No'
+		}
+	}
 
-		if (
-			   +mapBounds.getSouth() < +d.lat 
-			&& +d.lat < +mapBounds.getNorth() 
-			&& +mapBounds.getWest() < +d.lng 
-			&& +d.lng < +mapBounds.getEast()
-			&& d.cid == 'No'
-		) {
-			return L.marker([+d.lat, +d.lng], {icon: blueMarker}).bindPopup(d.vr_id)
-		};
+	var voters = window.data.filter(filters);
 
-	}, function(data) {
+	var markers = _.map(voters, function(voter) { 
+		var lat = +voter.get('lat');
+		var lng = +voter.get('lng');
 
-		countVoters += data.length;
-		center = map.getCenter();
-		zoom = map.getZoom();
+		if (inCID) {
+			return L.marker([lat, lng], {icon: greenMarker})
+		} else {
+			return L.marker([lat, lng], {icon: blueMarker})
+		}
+	} );
+		
+	return markers;
 
-		console.log('Num Out Voters:' + data.length);
-		$("#voter-count").text(numberWithCommas(countVoters));
-		outCIDMarkers.addLayers(data);
-		map.addLayer(outCIDMarkers);
-
-	});
 };
 
-// pass in the current bounds of the map, load the voters who are inside of the CIDs
-function showInVoters(mapBounds) {
-
-	d3.csv('data/geocodes.csv', function(d) {
-
-		if (
-			   +mapBounds.getSouth() < +d.lat 
-			&& +d.lat < +mapBounds.getNorth() 
-			&& +mapBounds.getWest() < +d.lng 
-			&& +d.lng < +mapBounds.getEast()
-			&& d.cid != 'No'
-		) {
-			return L.marker([+d.lat, +d.lng], {icon: greenMarker}).bindPopup(d.vr_id)
-		};
-
-	}, function(data) {
-
-		countVoters += data.length;
-		center = map.getCenter();
-		zoom = map.getZoom();
-
-		console.log('Num In Voters:' + data.length);
-		$("#voter-count").text(numberWithCommas(countVoters));
-		inCIDMarkers.addLayers(data);
-		map.addLayer(inCIDMarkers);
-
-	});
-};
-
-// pass in the map bounds and it returns the calculated geographic area
+// pass in the map bounds
+// returns the calculated geographic area
 function getArea(mapBounds) {
 
 	var height = mapBounds.getSouthEast().distanceTo(mapBounds.getNorthEast());
@@ -171,15 +106,107 @@ function getArea(mapBounds) {
 
 };
 
-$(document).ready(function() {
+// gets markers, adds them to layers and adds layers to the map
+// sets the global countVoters var
+function render() {
+	
+	console.log('Called!')
+	
+	mapBounds = map.getBounds();
+	var inCID = getMarkers(mapBounds, Boolean(true));
+	var outCID = getMarkers(mapBounds, Boolean(false));
+
+	inCIDMarkers.addLayers(inCID);
+	outCIDMarkers.addLayers(outCID);
+	
+	map.addLayer(inCIDMarkers);
+	map.addLayer(outCIDMarkers);
+
+	countVoters = inCID.length + outCID.length;
+
+};
+
+// handles the text below the map
+function writeInfo() {
 
 	mapBounds = map.getBounds();
-	showOutVoters(mapBounds);
-	showInVoters(mapBounds);
+	zoomLevel = map.getZoom();
+
+	if (zoomLevel > 14) {
+		if ( $("#instruct-text").is(":visible") ) {
+				$('#instruct-text').fadeOut(function() {
+					$('#info-text').fadeIn();
+				});
+		}
+
+	$("#voter-count").text(numberWithCommas(countVoters));
 	$("#sq-miles").text(getArea(mapBounds));
+
+	} else {
+		if ( $("#info-text").is(":visible") ) {
+				$('#info-text').fadeOut( function() {
+					$('#instruct-text').fadeIn();
+				});
+		}
+	}
+};
+
+// calls render() and writeInfo()
+var lazyRender = _.debounce(function() {
+
+	inCIDMarkers.clearLayers();
+	outCIDMarkers.clearLayers();
+	countVoters = 0;
+
+	if (map.getZoom() > 14) {
+		render();
+	} else {
+		inCIDMarkers.clearLayers();
+		outCIDMarkers.clearLayers();
+		countVoters = 0;
+	}
+
+	writeInfo();
+
+}, 300);
+
+// do all this stuff when the DOM
+$(document).ready(function() {
+
+	// set up the tile layer, coming from OpenStreetMaps, via Mapbox, and add it to the map
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+	    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+	    id: 'gordonje.fcef19c2',
+	    accessToken: 'pk.eyJ1IjoiZ29yZG9uamUiLCJhIjoiY2E4ZjhlODc3ZjA2OWFiMjJiOTcxMmM2YTJkZTBlNjQifQ.pTjkHSCU8l6v_7O0H_5c-g'
+	}).addTo(map);
+
+	// load the data into backbone collection
+	d3.csv('data/geocodes.csv', function(d) { 
+		window.data = new Backbone.Collection(d);
+		// then render and writeInfo for the first time
+		render();
+		writeInfo();
+	});
+
+	// load each CID .kml file
+	$.getJSON("data/downtown_cid.json", function(data){
+	// add GeoJSON layer to the map once the file is loaded
+		L.geoJson(data, {style: shapeStyle}).addTo(map);
+	});
+
+	$.getJSON("data/the_loop_cid.json", function(data){
+	// add GeoJSON layer to the map once the file is loaded
+		L.geoJson(data, {style: shapeStyle}).addTo(map);
+	});
+
+	$.getJSON("data/north_763_cid.json", function(data){
+	// add GeoJSON layer to the map once the file is loaded
+		L.geoJson(data, {style: shapeStyle}).addTo(map);
+	});
 
 });
 
+// below are the map events when we need to update things
 map.on('dragstart', function(e) {
 		
 	inCIDMarkers.clearLayers();
@@ -190,61 +217,52 @@ map.on('dragstart', function(e) {
 
 map.on('dragend', function(e) {
 
-	if (map.getZoom() > 13) {
-		
-		mapBounds = map.getBounds();
-		showOutVoters(mapBounds);
-		showInVoters(mapBounds);
-		
+	if (map.getZoom() > 14) {
+		render();
+		writeInfo();
 	} 
 });
 
+// the 'viewreset' map even should be handling zooming out
 map.on('viewreset', function(e) {
 
 	inCIDMarkers.clearLayers();
 	outCIDMarkers.clearLayers();
 	countVoters = 0;
 
-	if (map.getZoom() > 13) {
-
-		mapBounds = map.getBounds();
-		showOutVoters(mapBounds);
-		showInVoters(mapBounds);
-		$("sq-miles").text(getArea(mapBounds));
-
+	if (map.getZoom() > 14) {	
+		render();
+		writeInfo();
+	} else {
+		$('#info-text').fadeOut(function() {
+			$('#instruct-text').fadeIn();
+		});
 	} 
 });
 
-map.on('zoomend', function(e) {
-
-	if (map.getZoom() > 13) {
-		mapBounds = map.getBounds();
-		$("#sq-miles").text(getArea(mapBounds));
-		
-	} 
-});
-
-// not sure why this isn't working, seems to make to many callbacks?
-// map.on('resize', function(e) {
-
-// 	inCIDMarkers.clearLayers();
-// 	outCIDMarkers.clearLayers();
-// 	countVoters = 0;
-
-// 	if (map.getZoom() > 13) {
-
-// 		mapBounds = map.getBounds();
-// 		$("sq-miles").text(getArea(mapBounds));
-
-// 	} 
-// });
+map.on('resize', lazyRender);
 
 $("button").on('click', function() {
 	map.setView(
 		  $(this).attr("data-position").split(',')
 		, +$(this).attr("data-zoom")
 	);
+	// render();
+	// writeInfo();
 });
 
 
+// // shouldn't need to handle zoom events because of a) viewreset and b) marker-clusters handling of zooming in
+
+// map.on('zoomstart', function(e) {
+
+// 	console.log(map.getZoom());
+		
+// 	inCIDMarkers.clearLayers();
+// 	outCIDMarkers.clearLayers();
+// 	countVoters = 0;
+
+// });
+
+// map.on('zoomend', lazyRender);
 
